@@ -4,12 +4,12 @@ Make a new package named "core" under "org.firstinspires.ftc.teamcode."
 
 Copy the "PIDController.java" and "Timer.java" scripts into your core package.
 
-Create a Class veriable for the PID Controller, and Timer.
+Create a Class veriable for the PIDController, and Timer.
 
     private PIDController pidController;
     private Timer timer;
 
-In your Init Fucntion Create a new instance of PIDController, and Timner
+In your Init Fucntion Create a new instance of PIDController, and Timer
 
     pidController = new PIDController(0.8, 0.2, 0.2);
     timer = new Timer();
