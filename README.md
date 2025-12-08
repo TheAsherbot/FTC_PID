@@ -14,7 +14,7 @@ In your Init Fucntion Create a new instance of PIDController, and Timer
     pidController = new PIDController(0.8, 0.2, 0.2);
     timer = new Timer();
 
-Make sure to change the kP, kI, and kD veriables to fit your needs. If you do one of the constants, then leave it at 0, and it will not compute it.
+Make sure to change the kP, kI, and kD veriables to fit your needs. If you do not need one of the constants, then leave it at 0, and it will not compute it.
 
 Every cycle (frame) make sure to call the Update function for the timer
 
