@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.core;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 public class PIDController {
 
     private double kP;
@@ -14,6 +12,10 @@ public class PIDController {
 
     private double kD;
     private double lastError;
+
+    private boolean canLoop = false;
+    private double loopMin;
+    private double loopMax;
 
 
     public PIDController(double kP, double kI, double kD)
@@ -49,6 +51,27 @@ public class PIDController {
 
     public double Calculate(double currentPosition, double targetPosition, double deltaTime)
     {
+        if (canLoop)
+        {
+            targetPosition -= loopMin;
+            currentPosition -= loopMin;
+
+            double directDifference = Math.abs(targetPosition - currentPosition);
+            double forwardsLoopDifference = Math.abs((loopMax - loopMin + targetPosition) - currentPosition);
+
+            // this allows for clockwise looping, but not counter clockwise.
+
+            if (directDifference < forwardsLoopDifference)
+            {
+                // Direct power is faster
+            }
+            else
+            {
+                // Loop Forwards power is faster
+                targetPosition = loopMax - loopMin + targetPosition;
+            }
+        }
+
         double error = targetPosition - currentPosition;
         double errorRate = 0;
 
@@ -94,6 +117,13 @@ public class PIDController {
     public void Reset()
     {
         errorSum = 0;
+    }
+
+    public void SetLoop(boolean canLoop, double loopMin, double loopMax)
+    {
+        this.canLoop = canLoop;
+        this.loopMin = loopMin;
+        this.loopMax = loopMax;
     }
 
 }
