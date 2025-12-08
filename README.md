@@ -1,6 +1,8 @@
 # FTC_PID
 
-Copy the "PIDController.java" and "Timer.java" scripts into your project.
+Make a new package named "core" under "org.firstinspires.ftc.teamcode."
+
+Copy the "PIDController.java" and "Timer.java" scripts into your core package.
 
 Create a Class veriable for the PID Controller, and Timer.
 
