@@ -20,6 +20,6 @@ Every cycle (frame) make sure to call the Update function for the timer
 
     timer.Update();
 
-When you need to the power for a motor use the pidController's calculate function
+When you need to power a motor use the pidController's Calculate function
 
     elevatorMotor.setPower(pidController.Calculate(elevatorMotor.getCurrentPosition(), targetElevatorPosition, timer.deltaTime));
