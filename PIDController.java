@@ -51,26 +51,7 @@ public class PIDController {
 
     public double Calculate(double currentPosition, double targetPosition, double deltaTime)
     {
-        if (canLoop)
-        {
-            targetPosition -= loopMin;
-            currentPosition -= loopMin;
 
-            double directDifference = Math.abs(targetPosition - currentPosition);
-            double forwardsLoopDifference = Math.abs((loopMax - loopMin + targetPosition) - currentPosition);
-
-            // this allows for clockwise looping, but not counter clockwise.
-
-            if (directDifference < forwardsLoopDifference)
-            {
-                // Direct power is faster
-            }
-            else
-            {
-                // Loop Forwards power is faster
-                targetPosition = loopMax - loopMin + targetPosition;
-            }
-        }
 
         double error = targetPosition - currentPosition;
         double errorRate = 0;
@@ -107,8 +88,11 @@ public class PIDController {
         // Derivative
         if (kD != 0)
         {
-            errorRate = (error - lastError) / deltaTime;
-            lastError = errorRate;
+            if (error < maxError)
+            {
+                errorRate = (error - lastError) / deltaTime;
+                lastError = errorRate;
+            }
         }
 
         return (kP * error) + (kI * errorSum) + (kD * errorRate);
