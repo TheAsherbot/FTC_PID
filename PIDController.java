@@ -51,17 +51,56 @@ public class PIDController {
 
     public double Calculate(double currentPosition, double targetPosition, double deltaTime)
     {
-
-
-        double error = targetPosition - currentPosition;
+        double difference = loopMax - loopMin;
+        double error = 0;
         double errorRate = 0;
+
+        if (canLoop)
+        {
+            while (targetPosition > loopMax)
+            {
+                targetPosition -= difference;
+            }
+            while (targetPosition < loopMin)
+            {
+                targetPosition += difference;
+            }
+            
+            error = targetPosition - currentPosition;
+
+            while (error > loopMax)
+            {
+                error -= difference;
+            }
+            while (error < loopMin)
+            {
+                error += difference;
+            }
+         
+            double directDifference = Math.abs(error);
+            double loopDifference = difference - Math.abs(error);
+
+            if (directDifference < loopDifference)
+            {
+                error = error;
+            }
+            else
+            {
+                // Loop power is faster
+                error = -difference + error;
+            }
+        }
+        else
+        {
+            error = targetPosition - currentPosition;
+        }
 
         // Proportional
         if (kP != 0)
         {
-            if (maxError >= 0 && error > maxError)
+            if (maxError >= 0 && Math.abs(error) > maxError)
             {
-                error = maxError;
+                error = maxError * (error / Math.abs(error));
             }
         }
 
@@ -73,6 +112,11 @@ public class PIDController {
                 if (Math.abs(error) < kIActiveZone)
                 {
                     errorSum += error * deltaTime;
+                    // If passes the target then set error sum to 0
+                    if ((error < 0 && lastError > 0) || (error > 0 && lastError < 0))
+                    {
+                        errorSum = 0;
+                    }
                 }
                 else
                 {
@@ -88,13 +132,16 @@ public class PIDController {
         // Derivative
         if (kD != 0)
         {
-            if (error < maxError)
+            if (Math.abs(error) < maxError)
             {
-                errorRate = (error - lastError) / deltaTime;
-                lastError = errorRate;
+                if (error != lastError)
+                {
+                    errorRate = (error - lastError) / deltaTime;
+                }
             }
         }
 
+        lastError = errorRate;
         return (kP * error) + (kI * errorSum) + (kD * errorRate);
     }
 
